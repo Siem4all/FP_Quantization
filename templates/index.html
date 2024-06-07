@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+<title>F2P Number System</title>
+
+<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.png">
+
+<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+<link rel="stylesheet" href="assets/css/font-awesome.min.css">
+
+<link rel="stylesheet" href="assets/css/feathericon.min.css">
+
+<link rel="stylesheet" href="assets/plugins/morris/morris.css">
+
+<link rel="stylesheet" href="assets/css/style.css">
+    <style>
+#radioButtonContainer,
+#cntrBits{
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.radio-button {
+  display: inline-block;
+  margin-right: 10px;
+  padding:10px;
+}
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+<div class="main-wrapper">
+
+<div class="header">
+<a href="javascript:void(0);" id="toggle_btn">
+<i class="fe fe-text-align-left"></i>
+</a>
+<div class="top-nav-search">
+<form>
+<input type="text" class="form-control" placeholder="Search here">
+<button class="btn" type="submit"><i class="fa fa-search"></i></button>
+</form>
+</div>
+
+<a class="mobile_btn" id="mobile_btn">
+<i class="fa fa-bars"></i>
+</a>
+</div>
+
+
+<div class="sidebar" id="sidebar">
+<div class="sidebar-inner slimscroll">
+<div id="sidebar-menu" class="sidebar-menu">
+<ul>
+<li class="menu-title">
+</li>
+<li>
+<a href="index.html"><i class="fe fe-home"></i> <span>F2P Number System</span></a>
+</li>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+<div class="page-wrapper">
+<div class="content container-fluid">
+
+<div class="page-header">
+<div class="row">
+<div class="col-sm-12">
+<h3 class="page-title">F2P</h3>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-12 col-md-12 col-lg-12">
+<div class="card flex-fill">
+<div class="card-header">
+<ul role="tablist" class="nav nav-pills card-header-pills float-right">
+<li class="nav-item">
+<a href="#tab-4" data-bs-toggle="tab" class="nav-link active">Bits to F2P</a>
+</li>
+<li class="nav-item">
+<a href="#tab-5" data-bs-toggle="tab" class="nav-link">F2P to Bits</a>
+</li>
+</ul>
+</div>
+<div class="card-body">
+<div class="tab-content pt-0">
+<div role="tabpanel" id="tab-4" class="tab-pane fade show active">
+<div class="card">
+<div class="card-body">
+<div class="row">
+<div class="col-sm">
+<form id="myForm">
+<div class="row">
+<div class="col-md-3 mb-3">
+<label for="validationDefault01">Counter Size</label>
+<input type="number" class="form-control" name="cntr_size" id="cntr_size" min="5" max="32" required>
+</div>
+<div class="col-md-3 mb-3">
+<label for="validationDefault02">Hyper size</label>
+<input type="number" class="form-control" name="hyper_size" id="hyper_size" min="2" max="3" required>
+</div>
+ <div class="col-md-3 mb-3">
+<label for="validationDefault02">Flavor type</label>
+  <select class="form-control form-select" name="flavor_type" id="flavor_type" required>
+<option selected disabled>-- Select --</option>
+<option value="sr">F2PSr</option>
+<option value="lr">F2PLr</option>
+<option value="si">F2PSi</option>
+<option value="li">F2PLi</option>
+</select>
+</div>
+     <div class="col-md-3 mb-3">
+<label for="validationDefault02">FP type</label>
+  <select class="form-control form-select" name="fp_type" id="fp_type" required>
+<option selected disabled>-- Select --</option>
+<option value="F2P">F2P</option>
+<option value="F3P">F3P</option>
+</select>
+</div>
+ <hr>
+ <div id="radioButtonContainer"></div>
+ <hr>
+ <div class="form-group row" style="padding-top:10px;">
+<label class="col-form-label col-md-2">Binary Representation</label>
+<div class="col-md-10">
+<input type="text" id="cntrBits" name="cntrBits" class="form-control" value="{{ combinedValue }}" required>
+</div>
+</div>
+</div>
+     <div id="result"></div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div role="tabpanel" id="tab-5" class="tab-pane fade text-center">
+<div class="card-body">
+<form id="f2ptobits">
+<div class="row">
+<div class="col-md-3 mb-3">
+<label for="validationDefault011">Counter Size</label>
+<input type="number" class="form-control" id="cntrsize" name="cntrsize"  min="5" max="32" required>
+</div>
+<div class="col-md-3 mb-3">
+<label for="validationDefault022">Hyper size</label>
+<input type="number" class="form-control" id="hypersize" name="hypersize" min="2" max="3" required>
+</div>
+ <div class="col-md-3 mb-3">
+<label for="validationDefault022">Flavor type</label>
+  <select class="form-control form-select"  id="flavortype" name="flavortype"  required>
+<option selected disabled>-- Select --</option>
+<option value="sr">F2PSr</option>
+<option value="lr">F2PLr</option>
+<option value="si">F2PSi</option>
+<option value="li">F2PLi</option>
+</select>
+</div>
+    <div class="col-md-3 mb-3">
+<label for="validationDefault02">FP type</label>
+  <select class="form-control form-select" name="fptype" id="fptype" required>
+<option selected disabled>-- Select --</option>
+<option value="F2P">F2P</option>
+<option value="F3P">F3P</option>
+</select>
+</div>
+     <div class="form-group row" style="padding-top:10px;">
+<label class="col-form-label col-md-2">F2P Value</label>
+<div class="col-md-10">
+<input type="text" id="f2pvalue" name="f2pvalue" class="form-control"  required>
+</div>
+</div>
+</div>
+     <div id="cntr_bits"></div>
+</form>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+
+
+<script src="assets/js/jquery-3.6.0.min.js"></script>
+
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+
+<script src="assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
+
+<script src="assets/js/script.js"></script>
+<script>
+    // Get references to the input and container elements
+    const numberInput = document.getElementById('cntr_size');
+    const radioButtonContainer = document.getElementById('radioButtonContainer');
+    const combinedValueDiv = document.getElementById('cntrBits');
+
+    // Add an input event listener to the number input
+    numberInput.addEventListener('input', updateRadioButtons);
+
+    function updateRadioButtons() {
+      // Get the number from the input field
+      const numToRepeat = numberInput.value;
+
+      // Clear any previous radio buttons and combined value
+      radioButtonContainer.innerHTML = '';
+      combinedValueDiv.textContent = '';
+      const counterBitsText = document.createTextNode('Counter Bits:');
+      radioButtonContainer.appendChild(counterBitsText);
+      let combinedValue = '';
+
+      // Create and append the new radio buttons
+      for (let i = 0; i < numToRepeat; i++) {
+        const radioButtonDiv = document.createElement('div');
+        radioButtonDiv.classList.add('radio-button');
+
+        const label = document.createElement('label');
+
+        const newRadioButton = document.createElement('input');
+        newRadioButton.type = 'radio';
+        newRadioButton.name = `option${i + 1}`;
+        newRadioButton.value = '0';
+
+        newRadioButton.addEventListener('click', function() {
+          this.value = this.value === '0' ? '1' : '0';
+          this.checked = this.value === '1';
+          updateCombinedValue();
+        });
+
+        label.appendChild(newRadioButton);
+        label.appendChild(document.createTextNode(``));
+
+        radioButtonDiv.appendChild(label);
+        radioButtonContainer.appendChild(radioButtonDiv);
+
+        combinedValue += newRadioButton.checked ? '1' : '0';
+      }
+
+      updateCombinedValue();
+    }
+
+    function updateCombinedValue() {
+      const radioButtons = document.querySelectorAll('input[type="radio"]');
+      let combinedValue = '';
+
+      radioButtons.forEach(radio => {
+        combinedValue += radio.value;
+      });
+
+      combinedValueDiv.textContent = `Combined value: ${combinedValue}`;
+      const combinedValueInput = document.getElementById('cntrBits');
+      combinedValueInput.value = combinedValue;
+    }
+</script>
+ <script>
+        $(document).ready(function() {
+            var $form = $('#myForm');
+            var $cntr_size = $('#cntr_size');
+            var $hyper_size = $('#hyper_size');
+            var $flavor_type = $('#flavor_type');
+            var $fp_type = $('#fp_type');
+            var $cntrBits = $('#cntrBits');
+            var $result = $('#result');
+            var $radioButtonContainer = $('#radioButtonContainer');
+
+            // Check if all fields are filled and submit the form
+            function checkAndSubmitForm() {
+                if ($cntr_size.val() && $hyper_size.val() && $flavor_type.val() && $cntrBits.val() && $fp_type.val()) {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'webapp/BitstoF2P',
+                        data: $form.serialize(),
+                        success: function(data) {
+                            $result.html(`
+                             <div class="form-group row" style="padding-top:10px;">
+                             <label class="col-form-label col-md-2">Decimal Representation</label>
+                             <div class="col-md-10">
+                             <input type="text" class="form-control" value="${data.result}">
+                             </div>
+                              </div>
+                            `);
+                        },
+                        error: function() {
+                            $result.html('<h6 style="color:red;">Please enter correct data?.</h6>');
+                        }
+                    });
+                }
+            }
+
+            // Listen for changes in the input fields and submit the form if all fields are filled
+            $cntr_size.on('input', checkAndSubmitForm);
+            $hyper_size.on('input', checkAndSubmitForm);
+            $flavor_type.on('change', checkAndSubmitForm);
+            $fp_type.on('change', checkAndSubmitForm);
+            $cntrBits.on('input', checkAndSubmitForm);
+            // Trigger the checkAndSubmitForm function when the radioButtonContainer is clicked
+            $radioButtonContainer.click(checkAndSubmitForm);
+        });
+    </script>
+<script>
+        $(document).ready(function() {
+            var $form = $('#f2ptobits');
+            var $f2pvalue = $('#f2pvalue');
+            var $cntrsize = $('#cntrsize');
+            var $hypersize = $('#hypersize');
+            var $flavortype = $('#flavortype');
+            var $fptype = $('#fptype');
+            var $cntr_bits = $('#cntr_bits');
+            var $radioButtonContainer = $('#radioButtonContainer');
+
+            // Check if all fields are filled and submit the form
+            function checkAndSubmitForm() {
+                if ($cntrsize.val() && $hypersize.val() && $flavortype.val() && $f2pvalue.val() && $fptype.val()) {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'webapp/F2PtoBits',
+                        data: $form.serialize(),
+                        success: function(data) {
+                            $cntr_bits.html(`
+                             <div class="form-group row" style="padding-top:10px;">
+                             <label class="col-form-label col-md-2">Decimal Representation</label>
+                             <div class="col-md-10">
+                             <input type="text" class="form-control" value="${data.cntr_bits}">
+                             </div>
+                              </div>
+                            `);
+                        },
+                        error: function() {
+                            $cntr_bits.html('<h6 style="color:red;">Please enter correct data?.</h6>');
+                        }
+                    });
+                }
+            }
+
+            // Listen for changes in the input fields and submit the form if all fields are filled
+            $cntrsize.on('input', checkAndSubmitForm);
+            $hypersize.on('input', checkAndSubmitForm);
+            $flavortype.on('change', checkAndSubmitForm);
+            $fptype.on('change', checkAndSubmitForm);
+            $f2pvalue.on('input', checkAndSubmitForm);
+        });
+    </script>
+
+</body>
+</html>
