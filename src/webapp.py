@@ -1,3 +1,5 @@
+import json
+
 from flask import Flask, render_template, request, jsonify
 from SingleCntrSimulator import genCntrMasterFxp
 
@@ -26,18 +28,42 @@ def bitsToF2P():
         cntrBits = request.form.get('cntrBits')
         flavor = request.form.get('flavor_type')
         nSystem = request.form.get('fp_type')
-
+        signBit = cntrBits[0:1]
+        sn_type = int(request.form.get('sn_type'))
+        expSize    = 2**int(hyperSize)-1
         # Call the custom process_form() function
-        myCntr = genCntrMasterFxp(cntrSize=int(cntrSize), hyperSize=int(hyperSize), nSystem=str(nSystem), flavor=str(flavor), verbose=[])
-        result = myCntr.cntr2num(cntr=str(cntrBits))
-        # Return the result as a JSON response
-        return jsonify({"result": result})
+        if int(cntrSize)<3 or int(hyperSize)<1 and  sn_type==0:
+             result = f'Sorry, the number of bits or hyper-exp size is wrong!'
+             return json.dumps({"result": result})
+        if int(cntrSize)<4 or int(hyperSize)<1 and  sn_type==1:
+             result = f'Sorry, the number of bits or hyper-exp size is wrong!'
+             return json.dumps({"result": result})
+        elif sn_type==1 and expSize+int(hyperSize)<int(cntrSize):
+            myCntr = genCntrMasterFxp(cntrSize=int(cntrSize)-1, hyperSize=int(hyperSize), nSystem=str(nSystem), flavor=str(flavor), verbose=[])
+            if int(signBit)==0:
+                result = myCntr.cntr2num(cntr=str(cntrBits[1:]))
+                return json.dumps({"result": result})
+            else:
+                 result = -myCntr.cntr2num(cntr=str(cntrBits[1:]))
+                 return json.dumps({"result": result})
+        elif sn_type==0 and expSize+int(hyperSize)<int(cntrSize):
+            myCntr = genCntrMasterFxp(cntrSize=int(cntrSize), hyperSize=int(hyperSize), nSystem=str(nSystem), flavor=str(flavor), verbose=[])
+            result = myCntr.cntr2num(cntr=str(cntrBits))
+            return json.dumps({"result": result})
+        else:
+            if sn_type==1:
+                 result=f'For hyper-exp size {hyperSize}, the number of bits must be at least {expSize+int(hyperSize)+2}!'
+                 return json.dumps({"result": result})
+            else:
+                result=f'For hyper-exp size {hyperSize}, the number of bits must be at least {expSize+int(hyperSize)+1}!'
+                return json.dumps({"result": result})
+
     except Exception as e:
         # Handle any exceptions that occur during the function execution
-        return jsonify({"error": str(e)}), 500
+        return json.dumps({"error": str(e)})
 
 
-@app.route('/webapp/BitstoF2P', methods=['POST'])
+@app.route('/webapp/F2PtoBits', methods=['POST'])
 def F2PToBits():
     '''
     This recieves counter size, hyper size, counter bits and flavor type from the form to return the f2p value

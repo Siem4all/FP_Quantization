@@ -30,6 +30,12 @@
 }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      updateRadioButtons();
+      checkAndSubmitForm();
+    });
+  </script>
 </head>
 <body>
 
@@ -102,30 +108,34 @@
 <div class="col-sm">
 <form id="myForm">
 <div class="row">
-<div class="col-md-3 mb-3">
-<label for="validationDefault01">Counter Size</label>
-<input type="number" class="form-control" name="cntr_size" id="cntr_size" min="5" max="32" required>
+    <div class="col-md-2 mb-3">
+<label for="validationDefault02">Number System</label>
+  <select class="form-control form-select" name="fp_type" id="fp_type" required>
+<option value="F2P">F2P</option>
+<option value="F3P">F3P</option>
+</select>
 </div>
-<div class="col-md-3 mb-3">
-<label for="validationDefault02">Hyper size</label>
-<input type="number" class="form-control" name="hyper_size" id="hyper_size" min="2" max="3" required>
+<div class="col-md-2 mb-3">
+<label for="validationDefault01">Number of Bits</label>
+<input type="number" class="form-control" name="cntr_size" value="8" id="cntr_size" pattern="[3-9]|[1-9][0-9]+" title="Please enter a number greater than or equal to 3" required>
+</div>
+    <div class="col-md-3 mb-3">
+<label for="validationDefault01">Sign Type</label>
+ <select class="form-control form-select" name="sn_type" id="sn_type" required>
+<option value="1">Signed</option>
+<option value="0">UnSigned</option>
+</select></div>
+<div class="col-md-2 mb-3">
+<label for="validationDefault02">Hyper-exp size</label>
+<input type="number" class="form-control" name="hyper_size" id="hyper_size"  value="2" min="2" max="3" required>
 </div>
  <div class="col-md-3 mb-3">
-<label for="validationDefault02">Flavor type</label>
+<label for="validationDefault02">Flavor Type</label>
   <select class="form-control form-select" name="flavor_type" id="flavor_type" required>
-<option selected disabled>-- Select --</option>
 <option value="sr">F2PSr</option>
 <option value="lr">F2PLr</option>
 <option value="si">F2PSi</option>
 <option value="li">F2PLi</option>
-</select>
-</div>
-     <div class="col-md-3 mb-3">
-<label for="validationDefault02">FP type</label>
-  <select class="form-control form-select" name="fp_type" id="fp_type" required>
-<option selected disabled>-- Select --</option>
-<option value="F2P">F2P</option>
-<option value="F3P">F3P</option>
 </select>
 </div>
  <hr>
@@ -138,7 +148,14 @@
 </div>
 </div>
 </div>
-     <div id="result"></div>
+     <div id="result">
+         <div class="form-group row" style="padding-top:10px;">
+                             <label class="col-form-label col-md-2">Decimal Representation</label>
+                             <div class="col-md-10">
+                             <input type="text" class="form-control" value="0">
+                             </div>
+                              </div>
+     </div>
 </form>
 </div>
 </div>
@@ -178,7 +195,7 @@
      <div class="form-group row" style="padding-top:10px;">
 <label class="col-form-label col-md-2">F2P Value</label>
 <div class="col-md-10">
-<input type="text" id="f2pvalue" name="f2pvalue" class="form-control"  required>
+<input type="text" id="f2pvalue" name="f2pvalue" value="0" class="form-control"  required>
 </div>
 </div>
 </div>
@@ -204,7 +221,7 @@
 <script src="assets/plugins/slimscroll/jquery.slimscroll.min.js"></script>
 
 <script src="assets/js/script.js"></script>
-<script>
+ <script>
     // Get references to the input and container elements
     const numberInput = document.getElementById('cntr_size');
     const radioButtonContainer = document.getElementById('radioButtonContainer');
@@ -212,6 +229,9 @@
 
     // Add an input event listener to the number input
     numberInput.addEventListener('input', updateRadioButtons);
+
+    // Add a change event listener to the number input
+    numberInput.addEventListener('change', updateRadioButtons);
 
     function updateRadioButtons() {
       // Get the number from the input field
@@ -266,51 +286,66 @@
       const combinedValueInput = document.getElementById('cntrBits');
       combinedValueInput.value = combinedValue;
     }
-</script>
+  </script>
  <script>
-        $(document).ready(function() {
-            var $form = $('#myForm');
-            var $cntr_size = $('#cntr_size');
-            var $hyper_size = $('#hyper_size');
-            var $flavor_type = $('#flavor_type');
-            var $fp_type = $('#fp_type');
-            var $cntrBits = $('#cntrBits');
-            var $result = $('#result');
-            var $radioButtonContainer = $('#radioButtonContainer');
+      $(document).ready(function() {
+    var $form = $('#myForm');
+    var $cntr_size = $('#cntr_size');
+    var $hyper_size = $('#hyper_size');
+    var $flavor_type = $('#flavor_type');
+    var $fp_type = $('#fp_type');
+    var $sn_type = $('#sn_type');
+    var $cntrBits = $('#cntrBits');
+    var $result = $('#result');
+    var $radioButtonContainer = $('#radioButtonContainer');
 
-            // Check if all fields are filled and submit the form
-            function checkAndSubmitForm() {
-                if ($cntr_size.val() && $hyper_size.val() && $flavor_type.val() && $cntrBits.val() && $fp_type.val()) {
-                    $.ajax({
-                        type: 'POST',
-                        url: 'webapp/BitstoF2P',
-                        data: $form.serialize(),
-                        success: function(data) {
-                            $result.html(`
-                             <div class="form-group row" style="padding-top:10px;">
-                             <label class="col-form-label col-md-2">Decimal Representation</label>
-                             <div class="col-md-10">
-                             <input type="text" class="form-control" value="${data.result}">
-                             </div>
-                              </div>
-                            `);
-                        },
-                        error: function() {
-                            $result.html('<h6 style="color:red;">Please enter correct data?.</h6>');
-                        }
-                    });
+    // Check if all fields are filled and submit the form
+    function checkAndSubmitForm() {
+        if ($cntr_size.val() && $hyper_size.val() && $flavor_type.val() && $cntrBits.val() && $fp_type.val() && $sn_type.val()) {
+            $.ajax({
+                type: 'POST',
+                url: 'webapp/BitstoF2P',
+                data: $form.serialize(),
+                success: function(data) {
+                var result = JSON.parse(data).result;
+                if (isNaN(result)) {
+                $result.html(`
+                <div class="form-group row" style="padding-top:10px;">
+                <label class="col-form-label col-md-2">Decimal Representation</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" value="" style="border:red;">
+                    <center><p style="color: red;">${result}</p?>
+                </div>
+                </div>
+               `);
+                } else {
+                $result.html(`
+               <div class="form-group row" style="padding-top:10px;">
+                <label class="col-form-label col-md-2">Decimal Representation</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" value="${result}">
+                </div>
+               </div>
+             `);
+              }
+               },
+                error: function() {
+                    $result.html('<center><h6 style="color:red;">Please enter correct data?</h6></center>');
                 }
-            }
+            });
+        }
+    }
 
-            // Listen for changes in the input fields and submit the form if all fields are filled
-            $cntr_size.on('input', checkAndSubmitForm);
-            $hyper_size.on('input', checkAndSubmitForm);
-            $flavor_type.on('change', checkAndSubmitForm);
-            $fp_type.on('change', checkAndSubmitForm);
-            $cntrBits.on('input', checkAndSubmitForm);
-            // Trigger the checkAndSubmitForm function when the radioButtonContainer is clicked
-            $radioButtonContainer.click(checkAndSubmitForm);
-        });
+    // Listen for changes in the input fields and submit the form if all fields are filled
+    $cntr_size.on('input', checkAndSubmitForm);
+    $hyper_size.on('input', checkAndSubmitForm);
+    $flavor_type.on('change', checkAndSubmitForm);
+    $fp_type.on('change', checkAndSubmitForm);
+    $sn_type.on('change', checkAndSubmitForm);
+    $cntrBits.on('input', checkAndSubmitForm);
+    // Trigger the checkAndSubmitForm function when the radioButtonContainer is clicked
+    $radioButtonContainer.click(checkAndSubmitForm);
+});
     </script>
 <script>
         $(document).ready(function() {
