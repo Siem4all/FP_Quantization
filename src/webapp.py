@@ -29,14 +29,17 @@ def bitsToF2P():
         flavor = request.form.get('flavor_type')
         nSystem = request.form.get('fp_type')
         signBit = cntrBits[0:1]
-        sn_type = int(request.form.get('sn_type'))
+        sn_type=0
+        snType=str(request.form.get('sn_type'))
+        if snType=='signed':
+            sn_type=1
         expSize    = 2**int(hyperSize)-1
         # Call the custom process_form() function
         if int(cntrSize)<3 or int(hyperSize)<1 and  sn_type==0:
-             result = f'Sorry, the number of bits or hyper-exp size is wrong!'
+             result = f'Sorry, Either number of bits or hyper-exp size is wrong!'
              return json.dumps({"result": result})
         if int(cntrSize)<4 or int(hyperSize)<1 and  sn_type==1:
-             result = f'Sorry, the number of bits or hyper-exp size is wrong!'
+             result = f'Sorry, Either number of bits or hyper-exp size is wrong!'
              return json.dumps({"result": result})
         elif sn_type==1 and expSize+int(hyperSize)<int(cntrSize):
             myCntr = genCntrMasterFxp(cntrSize=int(cntrSize)-1, hyperSize=int(hyperSize), nSystem=str(nSystem), flavor=str(flavor), verbose=[])
