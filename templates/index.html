@@ -171,27 +171,32 @@
  <div class="col-md-3 mb-3">
 <label for="validationDefault02">Flavor Type</label>
   <select class="form-control form-select" name="flavortype" id="flavortype" required>
-<option value="sr">SR</option>
-<option value="lr">LR</option>
-<option value="si">SI</option>
-<option value="li">LI</option>
-</select>
+      <option value="lr">LR</option>
+      <option value="sr">SR</option>
+      <option value="si">SI</option>
+      <option value="li">LI</option>
+   </select>
 </div>
-<div class="col-md-6 mb-3">
+<div class="col-md-5 mb-3">
     <label for="validationDefault01">Sign Type:</label>&nbsp;&nbsp;&nbsp;
     <input type="radio" name="sntype" value="signed">&nbsp;&nbsp;&nbsp;
     <label for="validationDefault01">Signed</label>&nbsp;&nbsp;&nbsp;
     <input type="radio" name="sntype" value="unsigned" checked>
     <label for="validationDefault01">Unsigned</label>&nbsp;&nbsp;&nbsp;
 </div>
- <div class="form-group row" style="padding-top:10px;">
-<label class="col-form-label col-md-2">Decimal Value</label>
+ <div class="form-group row">
+<label class="col-form-label col-md-2">Decimal Value:</label>
 <div class="col-md-10">
 <input type="text" id="fpvalue" name="fpvalue" class="form-control" value="100" required>
 </div>
 </div>
 </div>
-     <div id="bits"></div>
+     <div id="cntr_bits" class="row">
+         <label class="col-form-label col-md-2">Binary Representation:</label>
+              <div class="col-md-10">
+                <input type="text" class="form-control" value="001010010">
+              </div>
+     </div>
 </form>
 </div>
 </div>
@@ -341,61 +346,57 @@
 
     </script>
 <script>
-    $(document).ready(function() {
+$(document).ready(function() {
   var $form = $('#f2ptobits');
-  var $cntr_size = $('#cntrsize');
-  var $hyper_size = $('#hypersize');
-  var $flavor_type = $('#flavortype');
-  var $fp_type = $('#fptype');
-  var $sn_type = $('input[name="sntype"]');
-  var $fpvalue = $('#fpvalue');
-  var $bits = $('#bits');
+  var $cntrsize = $('#cntrsize');
+  var $hypersize = $('#hypersize');
+  var $flavortype = $('#flavortype');
+  var $fptype = $('#fptype');
+    var $fpvalue = $('#fpvalue');
+  var $sntype = $('input[name="sntype"]:checked');
+  var $result = $('#cntr_bits');
 
   // Check if all fields are filled and submit the form
   function checkAndSubmitForm() {
-    if ($sn_type.is(':checked') && $cntr_size.val() && $hyper_size.val() && $flavor_type.val() && $fp_type.val()) {
+    if ($sntype.length && $cntrsize.val() && $hypersize.val() && $flavortype.val() && $fptype.val() && $fpvalue.val()) {
       $.ajax({
         type: 'POST',
         url: '/webapp/F2PtoBits',
         data: $form.serialize(),
         success: function(data) {
-          var bits = JSON.parse(data).bits;
-          if (isNaN(bits)) {
-            $bits.html(`
+          var cntr_bits = data.result;
+          binaryRegex = /^[01]+$/;
+          if (binaryRegex.test(data.result)) {
+            // The function returned a valid binary string
+            $result.html(`
               <div class="form-group row" style="padding-top:10px;">
-                <label class="col-form-label col-md-2">Binary Representation</label>
+                <label class="col-form-label col-md-2">Binary Representation:</label>
                 <div class="col-md-10">
-                  <input type="text" class="form-control" value="" style="border:red;">
-                  <center><p style="color: red;">${bits}</p>
+                  <input type="text" class="form-control" value="${cntr_bits}">
                 </div>
               </div>
             `);
           } else {
-            $bits.html(`
-              <div class="form-group row" style="padding-top:10px;">
-                <label class="col-form-label col-md-2">Binary Representation</label>
-                <div class="col-md-10">
-                  <input type="text" class="form-control" value="${bits}">
-                </div>
-              </div>
-            `);
+            // The function returned an error message
+            $result.html('<center><h6 style="color:red;">' + cntr_bits + '</h6></center>');
           }
         },
         error: function() {
-          $bits.html('<center><h6 style="color:red;">Please enter correct data?</h6></center>');
+          $result.html('<center><h6 style="color:red;">Please enter correct data.</h6></center>');
         }
       });
     }
   }
 
   // Listen for changes in the input fields and submit the form if all fields are filled
-  $cntr_size.on('input', checkAndSubmitForm);
-  $hyper_size.on('input', checkAndSubmitForm);
-  $flavor_type.on('change', checkAndSubmitForm);
-  $fp_type.on('change', checkAndSubmitForm);
-  $sn_type.on('change', checkAndSubmitForm);
-  $fpvalue.on('change', checkAndSubmitForm);
+  $cntrsize.on('input', checkAndSubmitForm);
+  $hypersize.on('input', checkAndSubmitForm);
+  $flavortype.on('change', checkAndSubmitForm);
+  $fptype.on('change', checkAndSubmitForm);
+  $sntype.on('change', checkAndSubmitForm);
+  $fpvalue.on('input', checkAndSubmitForm);
 });
+
 
 </script>
 </body>
